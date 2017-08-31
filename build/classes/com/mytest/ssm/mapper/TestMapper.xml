@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mytest.ssm.mapper.TestMapper" >
+<!-- 定义商品查询的sql片段，就是商品查询条件 -->
+   <sql id="tests_where">
+   	<!-- 使用动态sql，通过if判断，满足条件进行sql拼接 -->
+   	<!-- 商品查询条件通过ItemsQueryVo包装对象 中itemsCustom属性传递 -->
+   		<if test="testsCustom!=null">
+   			<if test="testsCustom.title!=null and testsCustom.title!=''">
+   				tests.title LIKE '%${testsCustom.title}%'
+   			</if>
+   		</if>
+	</sql>
+	<sql id="paper_where">
+   	<!-- 使用动态sql，通过if判断，满足条件进行sql拼接 -->
+   	<!-- 商品查询条件通过ItemsQueryVo包装对象 中itemsCustom属性传递 -->
+   		<if test="PaperCustom!=null">
+   			<if test="PaperCustom.papername!=null and PaperCustom.papername!=''">
+   				testpaper.papername LIKE '%${paperCustom.title}%'
+   			</if>
+   		</if>
+	</sql>
+	
+	<sql id="records_where">
+   		<if test="RecordsCustom!=null">
+   			<if test="RecordsCustom.username!=null and RecordsCustom.username!=''">
+   				records.username LIKE '%${RecordsCustom.title}%'
+   			</if>
+   		</if>
+	</sql>
+  	<select id="getTestsListById" parameterType="Integer"
+  		 resultType="com.mytest.ssm.po.TestsCustom">
+  		SELECT * FROM tests where paperID=#{paperID} and signt= 1
+  	</select>
+  	<select id="findPaperList" parameterType="com.mytest.ssm.po.PaperQueryVo"
+  		 resultType="com.mytest.ssm.po.PaperCustom">
+  		SELECT * FROM testpaper where sign = 1 and paperrank!=3
+  		<where>
+  			<include refid="paper_where"></include>
+  		</where>
+  	</select>
+  	<select id="getTestPaperbyName" parameterType="String" resultType="TestPaper">
+		select * from testpaper where papername=#{papername} and sign = 1
+    </select>
+<select id="getTestPaperbyId" parameterType="int" resultType="TestPaper">
+		select * from testpaper where paperID=#{paperID} and sign = 1
+</select>
+
+<insert id="records">
+     insert into records values(#{recordsID},#{userID},#{username},#{paperID},#{papername},#{grade},#{analyze},#{testtime})
+</insert>
+
+<select id="getRecordsListByName" parameterType="String" resultType="com.mytest.ssm.po.RecordsCustom">
+     select * from records where username=#{username}    
+</select>
+
+<select id="findRecordsByName" parameterType="String" resultType="com.mytest.ssm.po.Records">
+     select * from records where username=#{username}
+</select>
+
+
+</mapper>
